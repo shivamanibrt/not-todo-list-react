@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { RandomStrGenerator } from './utility'
 
 export const Form = ({ addTask }) => {
   const [frmDt, setFrmDt] = useState({
@@ -16,8 +17,10 @@ export const Form = ({ addTask }) => {
 
   const handleOnSubmit = (e) => {
     e.preventDefault();
+    const id = RandomStrGenerator(5);
+    console.log(id)
 
-    addTask(frmDt);
+    addTask({ ...frmDt, id });
   };
 
   return (

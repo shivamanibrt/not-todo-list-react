@@ -1,7 +1,11 @@
+import { type } from "@testing-library/user-event/dist/type";
 import React from "react";
 
-export const Table = ({ taskList }) => {
-  const entryList = taskList.map((item) => item.type === "entry");
+export const Table = ({ taskList, taskSwitcher, dlt }) => {
+  const entryList = taskList.filter((item) => item.type === "entry");
+  const badList = taskList.filter((item) => item.type === "bad");
+
+
 
   return (
     <div class="row mt-5 g-2">
@@ -11,18 +15,20 @@ export const Table = ({ taskList }) => {
         <table class="table table-striped table-hover">
           <tbody id="task-list">
             {entryList.map((item, i) => (
-              <tr>
+              <tr key={i}>
                 <td>{i + 1}</td>
                 <td>{item.task}</td>
                 <td>{item.hr} hr(s)</td>
                 <td class="text-end">
-                  <button onclick="deleteTask(${i})" class="btn btn-danger">
+                  <button onClick={() => dlt(item.id)} class="btn btn-danger">
                     <i class="fa-solid fa-trash"></i>
                   </button>
-                  <button onclick="markAsNotToDo(${i})" class="btn btn-success">
+                  {" "}
+                  <button onClick={() => taskSwitcher(item.id, 'bad')} class="btn btn-success">
                     <i class="fa-solid fa-right-long"></i>
                   </button>
                 </td>
+
               </tr>
             ))}
           </tbody>
@@ -32,13 +38,32 @@ export const Table = ({ taskList }) => {
         <h2 class="text-center">Bad List</h2>
         <hr />
         <table class="table table-striped table-hover">
-          <tbody id="bad-task"></tbody>
+          <tbody id="task-list">
+            {badList.map((item, i) => (
+              <tr key={i}>
+                <td>{i + 1}</td>
+                <td>{item.task}</td>
+                <td>{item.hr} hr(s)</td>
+                <td class="text-end">
+                  <button onClick={() => taskSwitcher(item.id, 'entry')} class="btn btn-warning">
+                    <i class="fa-solid fa-left-long"></i>
+                  </button>
+                  {" "}
+                  <button onClick={() => dlt(item.id)} class="btn btn-danger">
+                    <i class="fa-solid fa-trash"></i>
+
+                  </button>
+                </td>
+
+              </tr>
+            ))}
+          </tbody>
         </table>
 
         <div class="text-end fw-bold">
-          You can save <span id="totalBadHrs">0</span> Hours
+          You can save <span id="totalBadHrs">{badList.reduce((acc, { hr }) => acc + +hr, 0)}</span> Hours
         </div>
       </div>
-    </div>
+    </div >
   );
 };
